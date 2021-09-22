@@ -9,23 +9,23 @@ using System;
 [PostProcess(typeof(VolumeCloudRenderer), PostProcessEvent.AfterStack, "Unity/Volume Cloud")]
 public class VolumeCloud : PostProcessEffectSettings
 {
-    [Tooltip("Volume Cloud")]
+    [Header("颜色"),Tooltip("Volume Cloud Color")]
     public ColorParameter color = new ColorParameter { value = new Color(1f, 1f, 1f, 1f) };
 
-    [Range(0f, 1f),Tooltip("Volume Cloud intensity")]
+    [Header("密度"), Range(0f, 1f),Tooltip("Volume Cloud intensity")]
     public FloatParameter density = new FloatParameter { value = 0.5f };
 
-    [Range(0, 1024), Tooltip("Volume Cloud Matching Step")]
+    [Header("步数"),Range(0, 1024), Tooltip("Volume Cloud Matching Step")]
     public IntParameter step = new IntParameter { value = 256 };
 
-    [Tooltip("Volume Cloud Matching Step Distance")]
+    [Header("步长"),Tooltip("Volume Cloud Matching Step Distance")]
     public FloatParameter stepDistance = new FloatParameter { value = 0.05f };
 
-    [Tooltip("Cloud Center Position")]
+    [Header("中心点"),Tooltip("Cloud Center Position")]
     public Vector3Parameter center = new Vector3Parameter() { value = Vector3.zero };
 
-    [Tooltip("Cloud Size")]
-    public Vector3Parameter size = new Vector3Parameter() { value =  Vector3.one * 5 };
+    [Header("范围"),Tooltip("Cloud Size")]
+    public Vector3Parameter size = new Vector3Parameter() { value = Vector3.one * 5 };
 
 }
 
