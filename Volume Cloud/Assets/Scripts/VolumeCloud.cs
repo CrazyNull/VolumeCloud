@@ -45,6 +45,12 @@ public sealed class VolumeCloudRenderer : PostProcessEffectRenderer<VolumeCloud>
         sheet.properties.SetVector("_Size", settings.size);
 
 
+        Vector3 min = settings.center.value - settings.size.value * 0.5f;
+        Vector3 max = settings.center.value + settings.size.value * 0.5f;
+        sheet.properties.SetVector("_boundsMin", min);
+        sheet.properties.SetVector("_boundsMax", max);
+
+
         Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(context.camera.projectionMatrix, false);
         sheet.properties.SetMatrix(Shader.PropertyToID("_InverseProjectionMatrix"), projectionMatrix.inverse);
         sheet.properties.SetMatrix(Shader.PropertyToID("_InverseViewMatrix"), context.camera.cameraToWorldMatrix);
