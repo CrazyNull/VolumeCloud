@@ -18,22 +18,22 @@ MonoBehaviour:
     value: 1
   color:
     overrideState: 1
-    value: {r: 0, g: 0.57421327, b: 1, a: 1}
+    value: {r: 1, g: 1, b: 1, a: 1}
   density:
     overrideState: 1
-    value: 1
+    value: 0.019
   step:
     overrideState: 1
-    value: 256
+    value: 512
   stepDistance:
     overrideState: 1
-    value: 0.001
+    value: 0.2
   center:
     overrideState: 1
-    value: {x: 0, y: 0.3, z: 0}
+    value: {x: 0, y: 0.5, z: 0}
   size:
     overrideState: 1
-    value: {x: 60, y: 1, z: 60}
+    value: {x: 40, y: 1, z: 40}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

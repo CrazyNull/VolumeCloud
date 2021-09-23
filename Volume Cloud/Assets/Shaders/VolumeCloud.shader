@@ -25,21 +25,31 @@ Shader "Hidden/PostProcessing/VolumeCloud"
             float4x4 _InverseProjectionMatrix;
             float4x4 _InverseViewMatrix;
 
-            float cloudRayMarching(float dstLimit) 
+            float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+            float4 mod289(float4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+            float4 perm(float4 x){return mod289(((x * 34.0) + 1.0) * x);}
+
+            float noise(float3 p)
             {
-                float sumDensity  = 0.0;
-                float dstTravelled = 0;
-                for (int i = 0; i < _Step; i++)//步进总长度
-                {
-                    if ( dstLimit > 0) //被遮住时步进跳过
-                    {
-	                    sumDensity += _StepDistance;
-                        if (sumDensity > 1)
-                            break;
-                    }
-                   dstTravelled += _StepDistance; //每次步进长度
-                }
-                return sumDensity;
+                float3 a = floor(p);
+                float3 d = p - a;
+                d = d * d * (3.0 - 2.0 * d);
+
+                float4 b = a.xxyy + float4(0.0, 1.0, 0.0, 1.0);
+                float4 k1 = perm(b.xyxy);
+                float4 k2 = perm(k1.xyxy + b.zzww);
+
+                float4 c = k2 + a.zzzz;
+                float4 k3 = perm(c);
+                float4 k4 = perm(c + 1.0);
+
+                float4 o1 = frac(k3 * (1.0 / 41.0));
+                float4 o2 = frac(k4 * (1.0 / 41.0));
+
+                float4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+                float2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+
+                return o4.y * d.y + o4.x * (1.0 - d.y);
             }
 
 
@@ -69,6 +79,9 @@ Shader "Hidden/PostProcessing/VolumeCloud"
                 return world_vector;
             }
 
+
+
+
             float4 Frag(VaryingsDefault i) : SV_Target
             {
                 float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);
@@ -83,9 +96,31 @@ Shader "Hidden/PostProcessing/VolumeCloud"
                 float dstInsideBox = rayToContainerInfo.y;
                 float dstLimit = min(depthEyeLinear - dstToBox, dstInsideBox);
 
-                float cloud = cloudRayMarching(dstLimit);
+                float cloud = 0;
+                if(dstLimit > 0)
+                {
+                    float dstTravelled = 0;
+                    float maxLimit = dstInsideBox + dstToBox;
+                    worldPos.x += _Time.y;
+                    float3 pos = worldPos;
+                    for (int i = 0; i < _Step; i++)
+                    {
+                        if(dstTravelled > maxLimit)
+                        {
+                            break;
+                        }
+                        if(dstTravelled > dstToBox)
+                        {
+                            pos += worldViewDir * _StepDistance;
+                            cloud += noise(pos) * _Density;
+                        }
+                        if (cloud > 1)
+                            break;
+                        dstTravelled += _StepDistance;
+                    }
+                }
 
-                color = color + _Color * cloud * _Density;
+                color = color + _Color * cloud;
                 return color;
             }
 

@@ -12,7 +12,7 @@ public class VolumeCloud : PostProcessEffectSettings
     [Header("颜色"),Tooltip("Volume Cloud Color")]
     public ColorParameter color = new ColorParameter { value = new Color(1f, 1f, 1f, 1f) };
 
-    [Header("密度"), Range(0f, 1f),Tooltip("Volume Cloud intensity")]
+    [Header("密度"), Range(0f, 0.05f),Tooltip("Volume Cloud intensity")]
     public FloatParameter density = new FloatParameter { value = 0.5f };
 
     [Header("步数"),Range(0, 1024), Tooltip("Volume Cloud Matching Step")]
