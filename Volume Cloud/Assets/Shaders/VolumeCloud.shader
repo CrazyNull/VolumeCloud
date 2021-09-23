@@ -80,8 +80,6 @@ Shader "Hidden/PostProcessing/VolumeCloud"
             }
 
 
-
-
             float4 Frag(VaryingsDefault i) : SV_Target
             {
                 float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);
@@ -119,8 +117,7 @@ Shader "Hidden/PostProcessing/VolumeCloud"
                         dstTravelled += _StepDistance;
                     }
                 }
-
-                color = color + _Color * cloud;
+                color = lerp(color,_Color,cloud);
                 return color;
             }
 
