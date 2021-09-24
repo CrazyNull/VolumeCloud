@@ -101,20 +101,23 @@ Shader "Hidden/PostProcessing/VolumeCloud"
                     float maxLimit = dstInsideBox + dstToBox;
                     worldPos.x += _Time.y;
                     float3 pos = worldPos;
+                    float3 dir = worldViewDir * _StepDistance;
+                    float sumDensity = 0;
                     for (int i = 0; i < _Step; i++)
                     {
-                        if(dstTravelled > maxLimit)
-                        {
-                            break;
-                        }
                         if(dstTravelled > dstToBox)
                         {
-                            pos += worldViewDir * _StepDistance;
                             cloud += noise(pos) * _Density;
+                            sumDensity = exp(-density * stepSize );
+                            pos += dir;
                         }
                         if (cloud > 1)
                             break;
                         dstTravelled += _StepDistance;
+                        if(dstTravelled > maxLimit)
+                        {
+                            break;
+                        }
                     }
                 }
                 color = lerp(color,_Color,cloud);
